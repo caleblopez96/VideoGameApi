@@ -46,7 +46,12 @@ namespace VideoGameApi.Controllers
 
         public ActionResult<List<VideoGame>> GetVideoGame()
         {
-            return videoGames;
+            // the line below is ok
+            // return videoGames;
+            
+            // this is better
+            return Ok(videoGames);
+            // the Ok function returns http status code 200 OK
         }
 
     }

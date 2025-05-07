@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
 then use the following:
 https://localhost:7227/scalar/v1
 
-
+taking break video is paused at 23:40
 
 
 
