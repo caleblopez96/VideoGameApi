@@ -1,3 +1,11 @@
+1. create new .net framework (go back and see exact one)
+2. 
+
+
+
+
+
+
 Scala is what you use to debug/test your api. its absolutely essential when developing/working with an API.
 After you start the program, copy the link below in the browser and use the browser to work with your API.
 https://localhost:7227/scalar/v1
@@ -26,7 +34,9 @@ if (app.Environment.IsDevelopment())
 then use the following:
 https://localhost:7227/scalar/v1
 
-taking break video is paused at 23:40
+
+you can use sql scripts to manage writing everything to a database and what not
+to utilize this, you need to do a code first migration (46:00).
 
 
 
