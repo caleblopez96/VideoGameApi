@@ -1,3 +1,10 @@
+Scala is what you use to debug/test your api. its absolutely essential when developing/working with an API.
+After you start the program, copy the link below in the browser and use the browser to work with your API.
+https://localhost:7227/scalar/v1
+
+
+
+
 gets the weather forecast based on controllers
 https://localhost:7227/weatherforecast
 
