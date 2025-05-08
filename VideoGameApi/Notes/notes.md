@@ -2,12 +2,6 @@ Scala is what you use to debug/test your api. its absolutely essential when deve
 After you start the program, copy the link below in the browser and use the browser to work with your API.
 https://localhost:7227/scalar/v1
 
-
-
-
-gets the weather forecast based on controllers
-https://localhost:7227/weatherforecast
-
 when you create an api, typically you want to create documentation and a way to test is as you work on it.
 previously, the solution was to use swagger. it was just a ui that allowed you to work with your api, like postman.
 since its no longer being supported, you can use the openapi spec:
