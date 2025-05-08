@@ -38,6 +38,7 @@ https://localhost:7227/scalar/v1
 you can use sql scripts to manage writing everything to a database and what not
 to utilize this, you need to do a code first migration (46:00).
 
+taking a break. i just ran Update-Database command in the package manager console ()
 
 
 
