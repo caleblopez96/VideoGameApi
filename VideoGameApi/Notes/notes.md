@@ -21,13 +21,13 @@
     - Example model:
 ```C#
 public class VideoGame
-      {
-          public int Id { get; set; }
-          public string? Title { get; set; }
-          public string? Platform { get; set; }
-          public string? Developer { get; set; }
-          public string? Publisher { get; set; }
-      }
+    {
+       public int Id { get; set; }
+       public string? Title { get; set; }
+       public string? Platform { get; set; }
+       public string? Developer { get; set; }
+       public string? Publisher { get; set; }
+    }
 ```
 
 4. CREATE YOUR CONTROLLERS/DEFINE YOUR ROUTES:
@@ -97,31 +97,31 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
     BEFORE: 
     ```c#
     public static List<VideoGame> VideoGames = [ 
-                new VideoGame 
-                {
-                    Id = 1,
-                    Title = "Spider-Man 2",
-                    Platform = "PS5",
-                    Developer = "Insomniac Games",
-                    Publisher = "Sony Interactive Entertainment"
-                },
-                new VideoGame
-                {
-                    Id = 2,
-                    Title = "The Legend of Zelda: Breath of the Wild",
-                    Platform = "Nintendo Switch",
-                    Developer = "Nintendo EPD",
-                    Publisher = "Nintendo"
-                },
-                new VideoGame
-                {
-                    Id = 3,
-                    Title = "CyberPunk 2077",
-                    Platform = "PC",
-                    Developer = "CD Projekt Red",
-                    Publisher = "CD Projekt"
-                }
-            ];
+           new VideoGame 
+           {
+               Id = 1,
+               Title = "Spider-Man 2",
+               Platform = "PS5",
+               Developer = "Insomniac Games",
+               Publisher = "Sony Interactive Entertainment"
+           },
+           new VideoGame
+           {
+               Id = 2,
+               Title = "The Legend of Zelda: Breath of the Wild",
+               Platform = "Nintendo Switch",
+               Developer = "Nintendo EPD",
+               Publisher = "Nintendo"
+            },
+            new VideoGame
+            {
+                Id = 3,
+                Title = "CyberPunk 2077",
+                Platform = "PC",
+                Developer = "CD Projekt Red",
+                Publisher = "CD Projekt"
+            }
+         ];
     ```
     AFTER: ```C# private readonly VideoGameDbContext _context = context;```
    In your VideoGameController.cs, ActionResult's got wrapped in a Task and add the async keyword.
