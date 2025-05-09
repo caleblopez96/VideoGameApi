@@ -10,7 +10,7 @@ namespace VideoGameApi.Controllers
     [ApiController]
     public class VideoGameController(VideoGameDbContext context) : ControllerBase
     {
-        private readonly VideoGameDbContext _context = context;
+        private readonly VideoGameDbContext _context = context; // this makes it so that you can reference the database 
 
         // get all video games
         [HttpGet]

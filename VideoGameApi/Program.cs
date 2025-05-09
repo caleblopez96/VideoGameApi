@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // connect to the db context so the program knows about the db (43:00)
+// dependency injection
 builder.Services.AddDbContext<VideoGameDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
