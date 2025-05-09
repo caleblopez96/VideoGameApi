@@ -22,6 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 ```
 - To test/view/use the `OpenAPI` spec go to: `https://{localhost:XXXX}/openapi/v1/json` → `https://localhost:7227/openapi/v1.json`
+- *NOTE: If you need the localhost, you can find it in launchSettings.json*
+
 - To use `Scalar`:
   - Right click add a new NuGet package to your API
   - Browse the package manager for Scalar and download the package `Scalar.AspNetCore`
@@ -330,6 +332,12 @@ namespace VideoGameApi.Controllers
                 Publisher = "CD Projekt"
             }
          ];
+         // get all video games
+        [HttpGet]
+        public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+        {
+            return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+        }
     }
 }
 ```
