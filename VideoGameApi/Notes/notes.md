@@ -19,14 +19,14 @@
 3. CREATE YOUR MODEL(S):
    A model is a simple class that represents a data structure in your app — essentially a blueprint for the kind of data you’ll work with.
     - Example model:
-      public class VideoGame
-      {
-          public int Id { get; set; }
-          public string? Title { get; set; }
-          public string? Platform { get; set; }
-          public string? Developer { get; set; }
-          public string? Publisher { get; set; }
-      }
+      public class VideoGame <br>
+      { <br>
+          public int Id { get; set; } <br>
+          public string? Title { get; set; } <br>
+          public string? Platform { get; set; } <br>
+          public string? Developer { get; set; } <br>
+          public string? Publisher { get; set; } <br>
+      } <br>
   
 4. CREATE YOUR CONTROLLERS/DEFINE YOUR ROUTES:
    A controller is a C# class that defines your routes and endpoints for handling incoming HTTP requests (like GET, POST, PUT, DELETE).
