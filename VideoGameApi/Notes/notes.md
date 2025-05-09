@@ -332,6 +332,12 @@ namespace VideoGameApi.Controllers
                 Publisher = "CD Projekt"
             }
          ];
+         // get all video games
+        [HttpGet]
+        public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+        {
+            return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+        }
     }
 }
 ```
