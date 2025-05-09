@@ -1,8 +1,8 @@
-1. CREATE PROJECT:   create new ASP.NET core Web API project
+# 1. CREATE PROJECT:   create new ASP.NET core Web API project
     - name it whatever you want
     - CHECK enable OpenAPI support
     - CHECK use controllers (controllers provide end points)                      
-2. SET UP SCALAR:
+# 2. SET UP SCALAR:
    When you create an api, you need to also create documentation and you need a way to test is as you work on it.
     - Previously, the solution was to use swagger. it was just a ui that allowed you to work with your api, like postman.
     - Since its no longer being supported, you can use the openapi spec or Scalar (recommended).
@@ -16,7 +16,7 @@
         - Then open: https://{localhost:XXXX}/openapi/v1/json -> https://localhost:7227/scalar/v1
         - *NOTE: If you need the localhost, go look in launchSettings.json*
         
-3. CREATE YOUR MODEL(S):
+# 3. CREATE YOUR MODEL(S):
    A model is a simple class that represents a data structure in your app — essentially a blueprint for the kind of data you’ll work with.
     - Example model:
 ```
@@ -30,7 +30,7 @@ public class VideoGame
     }
 ```
 
-4. CREATE YOUR CONTROLLERS/DEFINE YOUR ROUTES:
+# 4. CREATE YOUR CONTROLLERS/DEFINE YOUR ROUTES:
    A controller is a C# class that defines your routes and endpoints for handling incoming HTTP requests (like GET, POST, PUT, DELETE).
     - Each method inside a controller maps to an endpoint and is responsible for handling a specific request type or operation.
     - It's typically best practice to create a Controllers folder so do that first.
@@ -38,8 +38,8 @@ public class VideoGame
     - Define and test your routes with scalar.
     - Routes will be: [HttpGet], [HttpPut], [HttpPost], [HttpDelete], etc...
     - The routes should return HTTP response codes (200, 201, 400, 404 etc...)    
-5. IMPLEMENT YOUR DATABASE CONTEXT AND ENTITY FRAMEWORK:
-   Implementing a db allows you to store data persistently. Make sure to have SQL Server installed.
+# 5. IMPLEMENT YOUR DATABASE CONTEXT AND ENTITY FRAMEWORK:
+   Implementing a db allows you to store data persistently. Make sure to have SQL Server installed.<br>
    The Entity Framework (EF Core) is an Object-Relational Mapper (ORM) that makes it easier to work with your database using C# objects instead of writing raw SQL queries.
     - To start, create a folder to hold your db context. This example uses Data.VideoGameDbContext.cs.
     - You'll need to install the MicrosoftEntityFrameworkCore. You can have the IDE do it for you by typing in:
@@ -60,7 +60,7 @@ public class VideoGame
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));```
         - add using Microsoft.EntityFrameworkCore (ctrl + .)
 
-6. IMPLEMENT CODE-FIRST MIGRATIONS:
+# 6. IMPLEMENT CODE-FIRST MIGRATIONS:
    Code-first migration allows you to write C# code and turn it into database related stuff.
    - First step is to download the NuGet package Microsoft.Entity.FrameworkCore.Tools
    - Then Open the package manager console and make sure the default project is set to the correct project.
@@ -73,7 +73,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
       - under databases you should see your newly created database, but the data should be empty
    - At this point, you can write manual sql queries to add data or you can seed data. Seed data is prob best.
 
-7. ADD SEED DATA:
+# 7. ADD SEED DATA:
    Seed data allows you to avoid writing sql queries to seed data into the db.
    - To do so, navigate to VideoGameContext.cs class and override the OnModelCreating() method:
       - ```protected override void OnModelCreating(ModelBuilder modelBuilder){} 
@@ -88,7 +88,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
       - open SSMS: VideoGameDb > Tables > dbo.VideoGames. 
       - right click execute SQL to force update. You should see your seed data.
     
-8. IMPLEMENT CRUD WITH ENTITY FRAMEWORK:
+# 8. IMPLEMENT CRUD WITH ENTITY FRAMEWORK:
    - The way this tutorial plays out, you set up the project without, then you add CRUD with entity framework after.
    - As I was writing the notes, I already completed the project, so you don't see "without entity framework" code.
    In VideoGameController.cs the line of code: private readonly VideoGameDbContext _context = context; adds the db context you use to reference objects from.
