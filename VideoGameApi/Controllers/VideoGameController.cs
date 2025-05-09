@@ -66,8 +66,8 @@ namespace VideoGameApi.Controllers
             }
             return Ok(games); // returns 200 (Ok) if found
         }
-        //// TEST:
-        //// https://localhost:7227/api/VideoGame/Developers/CD%20Projekt%20Red
+        // TEST:
+        // https://localhost:7227/api/VideoGame/Developers/CD%20Projekt%20Red
 
         // get all publishers:
         [HttpGet("publisher")]
@@ -123,7 +123,7 @@ namespace VideoGameApi.Controllers
         // update a video game
         [HttpPut("{id:int}")]
         // since this is updating an exisitng object it doesnt return anything
-        // use IActionResult instad 
+        // use IActionResult instead 
         public async Task<IActionResult> UpdateVideoGame(int id, VideoGame updatedGame)
         {
             var game = await _context.VideoGames.FindAsync(id);

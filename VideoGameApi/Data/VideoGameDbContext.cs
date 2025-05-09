@@ -5,7 +5,7 @@ namespace VideoGameApi.Data
 {
     public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
     {
-        // works:
+        // works the same as the best practice line below:
         // public DbSet<VideoGame> VideoGames { get; set; }
 
         // best practice:
