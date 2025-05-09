@@ -75,10 +75,10 @@ namespace VideoGameApi.Models
 ## 4. CREATE YOUR CONTROLLERS/DEFINE YOUR ROUTES
 A controller is a C# class that defines your routes and endpoints for handling incoming HTTP requests `GET`, `PUT`, `POST`, `DELETE` → `[HttpGet]`, `[HttpPut]`, `[HttpPost]`, `[HttpDelete]`, etc...
 - Each method inside the controller should map to an endpoint and should be responsible for handling a specific request type or operation.
-- Create a Controllers folder.
-- Begin creating your Controllers (refer to `VideoGameController.cs` to see a really good example of what a controller file looks like).
-- Create and test each route using Scalar. Test each route after you create it. Make sure it works before moving on.
-- The routes should return HTTP response codes (200, 201, 400, 404 etc...)
+  - Create a Controllers folder.
+  - Begin creating your Controllers (refer to `VideoGameController.cs` to see a really good example of what a controller file looks like).
+  - Create and test each route using Scalar. Test each route after you create it. Make sure it works before moving on.
+  - The routes should return HTTP response codes (200, 201, 400, 404 etc...)
 ```csharp
 VideoGameController.cs
 
@@ -293,7 +293,7 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
 In `VideoGameController.cs` the line of code: `private readonly VideoGameDbContext _context = context;` adds the db context you use to reference objects from.
 
 - Prior to this there were three VideoGame objects being used. 
- - Delete the mock data and replace it with the db context. Below is an example of before and after.
+  - Delete the mock data and replace it with the db context. Below is an example of before and after.
 BEFORE:
 ```csharp
 VideoGameController.cs
