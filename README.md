@@ -15,11 +15,30 @@ When you create an API, you need to also create documentation and you need a way
 Program.cs
 
 // Configure the HTTP request pipeline.
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     // this line handles OpenApi and is added by default when you ✓ enable OpenAPI support
     app.MapOpenApi();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
 ```
 - To test/view/use the `OpenAPI` spec go to: `https://{localhost:XXXX}/openapi/v1/json` → `https://localhost:7227/openapi/v1.json`
 - *NOTE: If you need the localhost, you can find it in launchSettings.json*
@@ -31,13 +50,33 @@ if (app.Environment.IsDevelopment())
 ```csharp
 Program.cs
 
+// Configure the HTTP request pipeline.
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // after the package has been added, add this line to utilize scalar:
-    app.MapScalarApiReference();
     // this line handles OpenApi and is added by default when you ✓ enable OpenAPI support
     app.MapOpenApi();
+    // after the package has been added, add this line to utilize scalar:
+    app.MapScalarApiReference();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
 ```
   - Then open: `https://{localhost:XXXX}/scalar/v1` → `https://localhost:7227/scalar/v1`
   - *NOTE: If you need the localhost, you can find it in launchSettings.json*
