@@ -186,7 +186,7 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
     }
 ```
   - Next add: `modelBuilder.Entity<VideoGame>().HasData(data);` add your data in place of the data argument (see VideoGameDbContext.cs for an example)
-  ```chsarp
+  ```csharp
   public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
     {
         // works:
@@ -215,10 +215,10 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
   ```
 
 - Next run the following command in the package manager console: `Add-Migration Seeding`
-  - This should create another migration file (20250508223857_Seeing.cs)
+  - This should create another migration file (20250508223857_Seeding.cs)
 - Next run the following command in the package manager console: `Update-Database`
   - This inserts the seed data to database
-- Go confirm it worked:
+- To confirm it worked:
   - Open SSMS: VideoGameDb > Tables > dbo.VideoGames
   - Right click execute SQL to force update. You should see your seed data
 
@@ -228,7 +228,8 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
 
 In VideoGameController.cs the line of code: `private readonly VideoGameDbContext _context = context;` adds the db context you use to reference objects from.
 
-- Prior to this there were three VideoGame objects being used. Delete the mock data and replace it with the db context.
+- Prior to this there were three VideoGame objects being used. 
+  - Delete the mock data and replace it with the db context. Below is an example of before and after.
 
 BEFORE:
 ```csharp
