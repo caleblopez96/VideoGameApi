@@ -19,7 +19,7 @@
 3. CREATE YOUR MODEL(S):
    A model is a simple class that represents a data structure in your app — essentially a blueprint for the kind of data you’ll work with.
     - Example model:
-```C#
+```
 public class VideoGame
     {
        public int Id { get; set; }
@@ -43,20 +43,20 @@ public class VideoGame
    The Entity Framework (EF Core) is an Object-Relational Mapper (ORM) that makes it easier to work with your database using C# objects instead of writing raw SQL queries.
     - To start, create a folder to hold your db context. This example uses Data.VideoGameDbContext.cs.
     - You'll need to install the MicrosoftEntityFrameworkCore. You can have the IDE do it for you by typing in:
-      ```C# public class {{ApiName}DbContext}(DbContextOptions<{{ApiName}DbContext}> options) : DbContext(options) {}```
+      ```public class {{ApiName}DbContext}(DbContextOptions<{{ApiName}DbContext}> options) : DbContext(options) {}```
         - This should trigger red squigglies. ctrl + . brings up a context menu to debug.
         - Inside of there should be an option: install package 'Microsoft.Entity.FrameworkCore.
         - Once you have installed the latest version, ctrl + . and add the reference (using Microsoft.EntityFrameworkCore).
     - Next step is to add a database set:
         - To do so, open the dbContext.cs file and add the following:
-        ```C# public DbSet<VideoGame> VideoGames => Set<VideoGame>();```
+        ```public DbSet<VideoGame> VideoGames => Set<VideoGame>();```
     - Next you need to tell the application where to find the database:
         - To do so, open appsettings.json and add your connection string:
-          ```json ConnectionStrings": {"DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"}```
+          ```ConnectionStrings": {"DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"}```
           *Note this way is preferred because you can use the same name in Azure*
     - Register the DbContext now in Program.cs using dependency injection:
         - before you do, download the Microsoft.EntityFrameworkCore.SqlServer NuGet package:
-        - then add: ```C# builder.Services.AddDbContext<VideoGameDbContext>(options =>
+        - then add: ```builder.Services.AddDbContext<VideoGameDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));```
         - add using Microsoft.EntityFrameworkCore (ctrl + .)
 
@@ -76,10 +76,10 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 7. ADD SEED DATA:
    Seed data allows you to avoid writing sql queries to seed data into the db.
    - To do so, navigate to VideoGameContext.cs class and override the OnModelCreating() method:
-      - ```C# protected override void OnModelCreating(ModelBuilder modelBuilder){} 
+      - ```protected override void OnModelCreating(ModelBuilder modelBuilder){} 
         ```
-      - next add: ```C# base.OnModelCreating(modelBuilder); ```
-      - next add: ```C# modelBuilder.Entity<VideoGame>().HasData(data); ``` add your data in place of the data argument (see VideoGameDbContext.cs for an example)
+      - next add: ```base.OnModelCreating(modelBuilder); ```
+      - next add: ```modelBuilder.Entity<VideoGame>().HasData(data); ``` add your data in place of the data argument (see VideoGameDbContext.cs for an example)
    - Next run the following command in the package manager console: Add-Migration Seeding
       - this should create another migration file (20250508223857_Seeing.cs)
    - Next run the following command in the package manager console: Update-Database
@@ -94,7 +94,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
    In VideoGameController.cs the line of code: private readonly VideoGameDbContext _context = context; adds the db context you use to reference objects from.
     - prior to this there were three VideoGame objects being used. Delete the mock data and replace it with the db context.
     BEFORE: 
-    ```c#
+    ```
     public static List<VideoGame> VideoGames = [ 
            new VideoGame 
            {
@@ -122,10 +122,10 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
             }
          ];
     ```
-    AFTER: ```C# private readonly VideoGameDbContext _context = context;```
+    AFTER: ```private readonly VideoGameDbContext _context = context;```
    In your VideoGameController.cs, ActionResult's got wrapped in a Task and add the async keyword.
-      - BEFORE: ```C# public <ActionResult<VideoGame> GetVideoGameById(int id)```
-      - AFTER: ```C# public async Task<ActionResult<VideoGame>> GetVideoGameById(int id)```
+      - BEFORE: ```public <ActionResult<VideoGame> GetVideoGameById(int id)```
+      - AFTER: ```public async Task<ActionResult<VideoGame>> GetVideoGameById(int id)```
 
 
 
