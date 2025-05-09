@@ -11,14 +11,28 @@ When you create an API, you need to also create documentation and you need a way
 - Previously, the solution was to use Swagger - a UI that allowed you to work with your API, like Postman
 - Since it's no longer being supported, you can use the OpenAPI spec or Scalar (recommended)
 - OpenAPI spec comes default in the project. It's configured in the HTTP request pipeline in Program.cs (`app.MapOpenApi()`)
+```csharp
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    // this line handles OpenApi
+    app.MapOpenApi();
+}
+```
 - To use the OpenAPI spec go to: `https://{localhost:XXXX}/openapi/v1/json` → `https://localhost:7227/openapi/v1.json`
 - To use Scalar:
   - Right click add a new NuGet package to your API
   - Browse the package manager for Scalar and download the package `Scalar.AspNetCore`
   - Next, add the following code to your Program.cs in the HTTP configuration request pipeline:
-    ```csharp
+```csharp
+    if (app.Environment.IsDevelopment())
+{
+    // this line handles Scalar
     app.MapScalarApiReference();
-    ```
+    // this line handles OpenApi
+    app.MapOpenApi();
+}
+```
   - Then open: `https://{localhost:XXXX}/openapi/v1/json` → `https://localhost:7227/scalar/v1`
   - *NOTE: If you need the localhost, go look in launchSettings.json*
 
@@ -43,8 +57,16 @@ A controller is a C# class that defines your routes and endpoints for handling i
 - It's typically best practice to create a Controllers folder so do that first
 - Refer to Controllers.VideoGameController to see a really good example of what a controller file looks like (there's at least one example of each HTTP method)
 - Define and test your routes with Scalar
-- Routes will be: `[HttpGet]`, `[HttpPut]`, `[HttpPost]`, `[HttpDelete]`, etc.
+- Routes will be: `[HttpGet]`, `[HttpPut]`, `[HttpPost]`, `[HttpDelete]`, etc...
 - The routes should return HTTP response codes (200, 201, 400, 404 etc.)
+```csharp
+// EXAMPLE:
+[HttpGet]
+   public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+   {
+       return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+   }
+```
 
 ## 5. IMPLEMENT YOUR DATABASE CONTEXT AND ENTITY FRAMEWORK
 Implementing a database allows you to store data persistently. Make sure to have SQL Server installed.
@@ -58,29 +80,58 @@ The Entity Framework (EF Core) is an Object-Relational Mapper (ORM) that makes i
   ```
   - This should trigger red squigglies. `ctrl + .` brings up a context menu to debug
   - Inside of there should be an option: install package 'Microsoft.Entity.FrameworkCore'
-  - Once you have installed the latest version, `ctrl + .` and add the reference (`using Microsoft.EntityFrameworkCore`)
+  - Once you have installed the latest version, `ctrl + .` and add the reference `using Microsoft.EntityFrameworkCore;`
 
 - Next step is to add a database set:
   - To do so, open the dbContext.cs file and add the following:
-    ```csharp
-    public DbSet<VideoGame> VideoGames => Set<VideoGame>();
-    ```
+```csharp
+    using Microsoft.EntityFrameworkCore;
+
+namespace VideoGameApi.Data
+{
+    public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+    {
+        // works:
+        // public DbSet<VideoGame> VideoGames { get; set; }
+
+        // best practice:
+        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+    }
+}
+```
 
 - Next you need to tell the application where to find the database:
   - To do so, open appsettings.json and add your connection string:
-    ```json
-    "ConnectionStrings": {"DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"}
-    ```
+```json
+    {
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
+```
     *Note this way is preferred because you can use the same name in Azure*
 
 - Register the DbContext now in Program.cs using dependency injection:
   - Before you do, download the Microsoft.EntityFrameworkCore.SqlServer NuGet package
-  - Then add: 
-    ```csharp
-    builder.Services.AddDbContext<VideoGameDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-    ```
-  - Add `using Microsoft.EntityFrameworkCore` (`ctrl + .`)
+  - Make sure to include `using Microsoft.EntityFrameworkCore`
+  - Then add: `builder.Services.AddDbContext<VideoGameDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));`
+```csharp
+builder.Services.AddOpenApi();
+
+// add this 
+builder.Services.AddDbContext<VideoGameDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+var app = builder.Build();
+```
 
 ## 6. IMPLEMENT CODE-FIRST MIGRATIONS
 Code-first migration allows you to write C# code and turn it into database related stuff.
@@ -88,7 +139,7 @@ Code-first migration allows you to write C# code and turn it into database relat
 - First step is to download the NuGet package Microsoft.Entity.FrameworkCore.Tools
 - Then open the package manager console and make sure the default project is set to the correct project
 - Run the following command in the package manager console: `Add-Migration Initial`
-  - Running this command should create and open a migration file (Migrations.20250508194021_Initial.cs)
+  - Running this command should create and open a migration file. Something like: `Migrations.20250508194021_Initial.cs`
   - This file contains the code that creates the SQL columns based off the C# code
 - Now, despite not having a db yet, run the following command in the package manager console: `Update-Database`
   - This command creates the database
@@ -99,12 +150,69 @@ Code-first migration allows you to write C# code and turn it into database relat
 ## 7. ADD SEED DATA
 Seed data allows you to avoid writing SQL queries to seed data into the db.
 
-- To do so, navigate to VideoGameContext.cs class and override the OnModelCreating() method:
-  ```csharp
-  protected override void OnModelCreating(ModelBuilder modelBuilder){}
-  ```
+- To do so, navigate to VideoGameDbContext.cs class and `override` the `OnModelCreating()` method: `protected override void OnModelCreating(ModelBuilder modelBuilder){ }`
+```csharp
+public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+    {
+        // works:
+        // public DbSet<VideoGame> VideoGames { get; set; }
+
+        // best practice:
+        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+        // override the OnModelCreating method
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+        {
+    }
+```
   - Next add: `base.OnModelCreating(modelBuilder);`
+```csharp
+public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+    {
+        // works:
+        // public DbSet<VideoGame> VideoGames { get; set; }
+
+        // best practice:
+        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+        // override the OnModelCreating method
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // add this
+            base.OnModelCreating(modelBuilder);
+        {
+    }
+```
   - Next add: `modelBuilder.Entity<VideoGame>().HasData(data);` add your data in place of the data argument (see VideoGameDbContext.cs for an example)
+  ```chsarp
+  public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+    {
+        // works:
+        // public DbSet<VideoGame> VideoGames { get; set; }
+
+        // best practice:
+        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // add this just with more seed data 
+            modelBuilder.Entity<VideoGame>().HasData(
+                new VideoGame
+                {
+                    Id = 1,
+                    Title = "Spider-Man 2",
+                    Platform = "PS5",
+                    Developer = "Insomniac Games",
+                    Publisher = "Sony Interactive Entertainment"
+                },...
+            );
+        }
+    }
+  ```
 
 - Next run the following command in the package manager console: `Add-Migration Seeding`
   - This should create another migration file (20250508223857_Seeing.cs)
@@ -124,43 +232,81 @@ In VideoGameController.cs the line of code: `private readonly VideoGameDbContext
 
 BEFORE:
 ```csharp
-public static List<VideoGame> VideoGames = [ 
-       new VideoGame 
-       {
-           Id = 1,
-           Title = "Spider-Man 2",
-           Platform = "PS5",
-           Developer = "Insomniac Games",
-           Publisher = "Sony Interactive Entertainment"
-       },
-       new VideoGame
-       {
-           Id = 2,
-           Title = "The Legend of Zelda: Breath of the Wild",
-           Platform = "Nintendo Switch",
-           Developer = "Nintendo EPD",
-           Publisher = "Nintendo"
-        },
-        new VideoGame
-        {
-            Id = 3,
-            Title = "CyberPunk 2077",
-            Platform = "PC",
-            Developer = "CD Projekt Red",
-            Publisher = "CD Projekt"
-        }
-     ];
+namespace VideoGameApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class VideoGameController(VideoGameDbContext context) : ControllerBase
+    {
+        public static List<VideoGame> VideoGames = [ 
+           new VideoGame 
+           {
+               Id = 1,
+               Title = "Spider-Man 2",
+               Platform = "PS5",
+               Developer = "Insomniac Games",
+               Publisher = "Sony Interactive Entertainment"
+           },
+           new VideoGame
+           {
+               Id = 2,
+               Title = "The Legend of Zelda: Breath of the Wild",
+               Platform = "Nintendo Switch",
+               Developer = "Nintendo EPD",
+               Publisher = "Nintendo"
+            },
+            new VideoGame
+            {
+                Id = 3,
+                Title = "CyberPunk 2077",
+                Platform = "PC",
+                Developer = "CD Projekt Red",
+                Publisher = "CD Projekt"
+            }
+         ];
+    }
+}
 ```
 
 AFTER: 
 ```csharp
-private readonly VideoGameDbContext _context = context;
+namespace VideoGameApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class VideoGameController(VideoGameDbContext context) : ControllerBase
+    {
+        private readonly VideoGameDbContext _context = context; // this makes it so that you can reference the database 
+
+        // get all video games
+        [HttpGet]
+        public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+        {
+            return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+        }
+    }
+}
 ```
 
-In your VideoGameController.cs, ActionResult's got wrapped in a Task and add the async keyword.
-- BEFORE: `public <ActionResult<VideoGame> GetVideoGameById(int id)`
-- AFTER: `public async Task<ActionResult<VideoGame>> GetVideoGameById(int id)`
-
+In VideoGameController.cs, ActionResult's got wrapped in a Task and add the async keyword.
+- BEFORE: 
+```csharp
+// get all video games
+    [HttpGet]
+    public ActionResult<List<VideoGame>> GetVideoGame()
+    {
+        return Ok(VideoGames); // returns 200 (Ok) if found
+    }    
+```
+- AFTER: 
+```csharp
+// get all video games
+    [HttpGet]
+    public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+    {
+        return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+    }
+```
 ---
 
 **Helpful Tips:**
