@@ -43,8 +43,7 @@ public class VideoGame
    The Entity Framework (EF Core) is an Object-Relational Mapper (ORM) that makes it easier to work with your database using C# objects instead of writing raw SQL queries.
     - To start, create a folder to hold your db context. This example uses Data.VideoGameDbContext.cs.
     - You'll need to install the MicrosoftEntityFrameworkCore. You can have the IDE do it for you by typing in:
-      public class {{ApiName}DbContext}(DbContextOptions<{{ApiName}DbContext}> options) : DbContext(options).
-    - Example: ```C# public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options);```
+      ```C# public class {{ApiName}DbContext}(DbContextOptions<{{ApiName}DbContext}> options) : DbContext(options) {}```
         - This should trigger red squigglies. ctrl + . brings up a context menu to debug.
         - Inside of there should be an option: install package 'Microsoft.Entity.FrameworkCore.
         - Once you have installed the latest version, ctrl + . and add the reference (using Microsoft.EntityFrameworkCore).
@@ -53,7 +52,7 @@ public class VideoGame
         ```C# public DbSet<VideoGame> VideoGames => Set<VideoGame>();```
     - Next you need to tell the application where to find the database:
         - To do so, open appsettings.json and add your connection string:
-          ConnectionStrings": {"DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"}
+          ```json ConnectionStrings": {"DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"}```
           *Note this way is preferred because you can use the same name in Azure*
     - Register the DbContext now in Program.cs using dependency injection:
         - before you do, download the Microsoft.EntityFrameworkCore.SqlServer NuGet package:
