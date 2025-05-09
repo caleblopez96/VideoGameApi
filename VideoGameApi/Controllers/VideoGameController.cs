@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 using VideoGameApi.Data;
+using VideoGameApi.Models;
 
 namespace VideoGameApi.Controllers
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VideoGameApi.Models;
 
 namespace VideoGameApi.Data
 {
