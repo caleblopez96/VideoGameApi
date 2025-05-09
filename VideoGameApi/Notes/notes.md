@@ -13,6 +13,7 @@ When you create an API, you need to also create documentation and you need a way
 - The `OpenAPI` is configured in the HTTP request pipeline in `Program.cs`
 ```csharp
 Program.cs
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -26,6 +27,8 @@ if (app.Environment.IsDevelopment())
   - Browse the package manager for Scalar and download the package `Scalar.AspNetCore`
   - Next, add the following code to your `Program.cs` in the HTTP configuration request pipeline:
 ```csharp
+Program.cs
+
 if (app.Environment.IsDevelopment())
 {
     // after the package has been added, add this line to utilize scalar:
@@ -37,6 +40,8 @@ if (app.Environment.IsDevelopment())
   - Then open: `https://{localhost:XXXX}/scalar/v1` → `https://localhost:7227/scalar/v1`
   - *NOTE: If you need the localhost, you can find it in launchSettings.json*
 ```json
+launchSettings.json
+
 "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
@@ -50,8 +55,10 @@ if (app.Environment.IsDevelopment())
 ## 3. CREATE YOUR MODEL(S)
 A model is a simple class that represents a data structure in your app — essentially a blueprint for the kind of data you'll work with.
  - Create a Models folder and start creating Models.
-Example `VideoGame.cs`:
+Example:
 ```csharp
+VideoGame.cs
+
 namespace VideoGameApi.Models
 {
     public class VideoGame
@@ -73,6 +80,8 @@ A controller is a C# class that defines your routes and endpoints for handling i
 - Create and test each route using Scalar. Test each route after you create it. Make sure it works before moving on.
 - The routes should return HTTP response codes (200, 201, 400, 404 etc...)
 ```csharp
+VideoGameController.cs
+
 // EXAMPLE of an HTTP method returning HTTP response code:
 [HttpGet]
    public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
@@ -88,7 +97,9 @@ The `Entity Framework` (EF Core) is an Object-Relational Mapper (ORM) that makes
 
 - To start, create a folder to hold your db context. This example uses `Data.VideoGameDbContext.cs`
 - You'll need to install the `MicrosoftEntityFrameworkCore` and add the following using statement:
- ```csharp
+```csharp
+VideoGameDbContext.cs
+
 // add this line:
 using Microsoft.EntityFrameworkCore;
 
@@ -108,6 +119,8 @@ namespace VideoGameApi.Data
 - Next step is to add a database set:
   - To do so, open the `VideoGameDbContext.cs` file and add the following:
 ```csharp
+VideoGameDbContext.cs
+
 using Microsoft.EntityFrameworkCore;
 
 namespace VideoGameApi.Data
@@ -125,7 +138,9 @@ namespace VideoGameApi.Data
 - Next you need to tell the application where to find the database:
   - To do so, open `appsettings.json` and add your connection string:
 ```json
-    {
+appSettings.json
+
+{
   // add this:
   "ConnectionStrings": {
     "DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"
@@ -138,7 +153,7 @@ namespace VideoGameApi.Data
   },
   "AllowedHosts": "*"
 }
-```
+  ```
     *Note this way is preferred because you can use the same name in Azure*
 
 - Register the DbContext now in `Program.cs` using dependency injection:
@@ -148,6 +163,8 @@ namespace VideoGameApi.Data
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));`
 
 ```csharp
+Program.cs 
+
 // These are the dependencies we just added + the Scalar dependency from earlier
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -186,7 +203,6 @@ app.Run();
 
 ## 6. IMPLEMENT CODE-FIRST MIGRATIONS
 Code-first migration allows you to write C# code and turn it into database related stuff.
-
 - First step is to download the NuGet package `Microsoft.Entity.FrameworkCore.Tools`
 - Then open the package manager console and make sure the default project is set to the correct project
 - Run the following command in the package manager console: `Add-Migration Initial`
@@ -200,9 +216,10 @@ Code-first migration allows you to write C# code and turn it into database relat
 
 ## 7. ADD SEED DATA
 Seed data allows you to avoid writing SQL queries to seed data into the db.
-
-- To do so, navigate to `VideoGameDbContext.cs` class and `override` the `OnModelCreating()` method: `protected override void OnModelCreating(ModelBuilder modelBuilder){ }`
+- Navigate to `VideoGameDbContext.cs` class and `override` the `OnModelCreating()` method: `protected override void OnModelCreating(ModelBuilder modelBuilder){ }`
 ```csharp
+VideoGameDbContext.cs
+
 public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
 {
     // best practice:
@@ -218,6 +235,8 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
 ```
   - Next add: `base.OnModelCreating(modelBuilder);`
 ```csharp
+VideoGameDbContext.cs
+
 public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
 {
     // best practice:
@@ -233,6 +252,8 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
 ```
   - Next add: `modelBuilder.Entity<VideoGame>().HasData();`
 ```csharp
+VideoGameDbContext.cs
+
 public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
 {
     // best practice:
@@ -275,6 +296,8 @@ In `VideoGameController.cs` the line of code: `private readonly VideoGameDbConte
  - Delete the mock data and replace it with the db context. Below is an example of before and after.
 BEFORE:
 ```csharp
+VideoGameController.cs
+
 namespace VideoGameApi.Controllers
 {
     [Route("api/[controller]")]
@@ -313,6 +336,8 @@ namespace VideoGameApi.Controllers
 
 AFTER: 
 ```csharp
+VideoGameController.cs
+
 namespace VideoGameApi.Controllers
 {
     [Route("api/[controller]")]
@@ -336,6 +361,8 @@ namespace VideoGameApi.Controllers
 - Additionally, instead of referring to the videoGames list: `List<VideoGame> VideoGames = [...];`, refer to the db context (_content)
 - BEFORE: 
 ```csharp
+VideoGameController.cs
+
 // get all video games
     [HttpGet]
     // before using ActionResult<T<T>>
@@ -347,6 +374,8 @@ namespace VideoGameApi.Controllers
 ```
 - AFTER: 
 ```csharp
+VideoGameController.cs
+
 // get all video games
     [HttpGet]
     // after using async and Task<T<T<T>>>:
