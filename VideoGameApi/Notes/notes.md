@@ -6,41 +6,50 @@ Create new `ASP.NET core Web API` project
 - ✓ enable OpenAPI support
 - ✓ use controllers (controllers provide end points)
 
-## 2. SET UP SCALAR
+## 2. SET UP TESTING WITH SCALAR
 When you create an API, you need to also create documentation and you need a way to test it as you work on it.
 - Previously, the solution was to use Swagger - a UI that allowed you to work with your API, like Postman
 - Since it's no longer being supported, you can use the `OpenAPI` spec or `Scalar` (recommended)
-- `OpenAPI` spec comes default in the project. It's configured in the HTTP request pipeline in `Program.cs` (`app.MapOpenApi()`)
+- The `OpenAPI` is configured in the HTTP request pipeline in `Program.cs`
 ```csharp
+Program.cs
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // this line handles OpenApi
-    // this line is added by default:
+    // this line handles OpenApi and is added by default when you ✓ enable OpenAPI support
     app.MapOpenApi();
 }
 ```
-- To use the `OpenAPI` spec go to: `https://{localhost:XXXX}/openapi/v1/json` → `https://localhost:7227/openapi/v1.json`
+- To test/view/use the `OpenAPI` spec go to: `https://{localhost:XXXX}/openapi/v1/json` → `https://localhost:7227/openapi/v1.json`
 - To use `Scalar`:
   - Right click add a new NuGet package to your API
   - Browse the package manager for Scalar and download the package `Scalar.AspNetCore`
   - Next, add the following code to your `Program.cs` in the HTTP configuration request pipeline:
 ```csharp
-    if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    // this line handles Scalar
-    // add this line:
+    // after the package has been added, add this line to utilize scalar:
     app.MapScalarApiReference();
-    // this line handles OpenApi
+    // this line handles OpenApi and is added by default when you ✓ enable OpenAPI support
     app.MapOpenApi();
 }
 ```
-  - Then open: `https://{localhost:XXXX}/openapi/v1/json` → `https://localhost:7227/scalar/v1`
-  - *NOTE: If you need the localhost, go look in launchSettings.json*
+  - Then open: `https://{localhost:XXXX}/scalar/v1` → `https://localhost:7227/scalar/v1`
+  - *NOTE: If you need the localhost, you can find it in launchSettings.json*
+```json
+"https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7227;http://localhost:5121",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+```
 
 ## 3. CREATE YOUR MODEL(S)
 A model is a simple class that represents a data structure in your app — essentially a blueprint for the kind of data you'll work with.
-  - Create a Models folder and start creating Models.
+ - Create a Models folder and start creating Models.
 Example `VideoGame.cs`:
 ```csharp
 namespace VideoGameApi.Models
@@ -57,19 +66,18 @@ namespace VideoGameApi.Models
 ```
 
 ## 4. CREATE YOUR CONTROLLERS/DEFINE YOUR ROUTES
-A controller is a C# class that defines your routes and endpoints for handling incoming HTTP requests (GET, POST, PUT, DELETE).
-- Each method inside a controller maps to an endpoint and is responsible for handling a specific request type or operation.
-- It's typically best practice to create a Controllers folder so do that first.
-- Refer to `VideoGameController.cs` to see a really good example of what a controller file looks like.
-- Define and test your routes with Scalar
-- Routes will be: `[HttpGet]`, `[HttpPut]`, `[HttpPost]`, `[HttpDelete]`, etc...
-- The routes should return HTTP response codes (200, 201, 400, 404 etc.)
+A controller is a C# class that defines your routes and endpoints for handling incoming HTTP requests `GET`, `PUT`, `POST`, `DELETE` → `[HttpGet]`, `[HttpPut]`, `[HttpPost]`, `[HttpDelete]`, etc...
+- Each method inside the controller should map to an endpoint and should be responsible for handling a specific request type or operation.
+- Create a Controllers folder.
+- Begin creating your Controllers (refer to `VideoGameController.cs` to see a really good example of what a controller file looks like).
+- Create and test each route using Scalar. Test each route after you create it. Make sure it works before moving on.
+- The routes should return HTTP response codes (200, 201, 400, 404 etc...)
 ```csharp
-// EXAMPLE:
+// EXAMPLE of an HTTP method returning HTTP response code:
 [HttpGet]
    public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
    {
-       return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+       return Ok(await _context.VideoGames.ToListAsync()); // the Ok() method returns HTTP status code 200 (Ok) if found.
    }
 ```
 
@@ -79,7 +87,7 @@ Implementing a database allows you to store data persistently. Make sure to have
 The `Entity Framework` (EF Core) is an Object-Relational Mapper (ORM) that makes it easier to work with your database using C# objects instead of writing raw SQL queries.
 
 - To start, create a folder to hold your db context. This example uses `Data.VideoGameDbContext.cs`
-- You'll need to install the `MicrosoftEntityFrameworkCore`:
+- You'll need to install the `MicrosoftEntityFrameworkCore` and add the following using statement:
  ```csharp
 // add this line:
 using Microsoft.EntityFrameworkCore;
@@ -196,65 +204,62 @@ Seed data allows you to avoid writing SQL queries to seed data into the db.
 - To do so, navigate to `VideoGameDbContext.cs` class and `override` the `OnModelCreating()` method: `protected override void OnModelCreating(ModelBuilder modelBuilder){ }`
 ```csharp
 public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+{
+    // best practice:
+    public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+    // override the OnModelCreating method
+    // add this line:
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // best practice:
-        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
 
-        // override the OnModelCreating method
-        // add this line:
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-
-        {
-    }
+    {
+}
 ```
   - Next add: `base.OnModelCreating(modelBuilder);`
 ```csharp
 public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+{
+    // best practice:
+    public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+    // override the OnModelCreating method
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // works:
-        // public DbSet<VideoGame> VideoGames { get; set; }
-
-        // best practice:
-        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
-
-        // override the OnModelCreating method
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // add this:
-            base.OnModelCreating(modelBuilder);
-        {
-    }
+        // add this:
+        base.OnModelCreating(modelBuilder);
+    {
+}
 ```
   - Next add: `modelBuilder.Entity<VideoGame>().HasData();`
-  ```csharp
-  public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+```csharp
+public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+{
+    // best practice:
+    public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // best practice:
-        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+        base.OnModelCreating(modelBuilder);
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            // add this just with more seed data
-            // add this:
-            modelBuilder.Entity<VideoGame>().HasData(
-                new VideoGame
-                {
-                    Id = 1,
-                    Title = "Spider-Man 2",
-                    Platform = "PS5",
-                    Developer = "Insomniac Games",
-                    Publisher = "Sony Interactive Entertainment"
-                },...
-            );
-        }
+        // add this just with more seed data
+        // add this:
+        modelBuilder.Entity<VideoGame>().HasData(
+            new VideoGame
+            {
+                Id = 1,
+                Title = "Spider-Man 2",
+                Platform = "PS5",
+                Developer = "Insomniac Games",
+                Publisher = "Sony Interactive Entertainment"
+            },...
+        );
     }
+}
   ```
 
 - Next run the following command in the package manager console: `Add-Migration Seeding`
-  - This should create another migration file (20250508223857_Seeding.cs)
+  - This should create another migration file. Somthing like: (20250508223857_Seeding.cs)
 - Next run the following command in the package manager console: `Update-Database`
   - This inserts the seed data to database
 - To confirm it worked:
@@ -262,13 +267,12 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
   - Right click execute SQL to force update. You should see your seed data
 
 ## 8. IMPLEMENT CRUD WITH ENTITY FRAMEWORK
-- The way this tutorial plays out, you set up the project without, then you add CRUD with entity framework after
-- As I was writing the notes, I already completed the project, so you don't see "without entity framework" code
+- The way this tutorial plays out, you set up the project without features, then you add CRUD with entity framework after.
 
 In `VideoGameController.cs` the line of code: `private readonly VideoGameDbContext _context = context;` adds the db context you use to reference objects from.
 
 - Prior to this there were three VideoGame objects being used. 
-  - Delete the mock data and replace it with the db context. Below is an example of before and after.
+ - Delete the mock data and replace it with the db context. Below is an example of before and after.
 BEFORE:
 ```csharp
 namespace VideoGameApi.Controllers
@@ -328,8 +332,8 @@ namespace VideoGameApi.Controllers
 }
 ```
 
-- In `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and add `async/await`.
-- Additionally, instead of referring to the videoGames list: `List<VideoGame> VideoGames = [...];`
+- In `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and made methods async with `async/await`.
+- Additionally, instead of referring to the videoGames list: `List<VideoGame> VideoGames = [...];`, refer to the db context (_content)
 - BEFORE: 
 ```csharp
 // get all video games
@@ -348,7 +352,7 @@ namespace VideoGameApi.Controllers
     // after using async and Task<T<T<T>>>:
     public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
     {
-        // after using await and adding the db context (_context)
+        // after using await and referring to the db context (_context)
         return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
     }
 ```
