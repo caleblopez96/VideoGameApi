@@ -2,11 +2,11 @@
 
 ## 1. CREATE PROJECT
 
-Create new `ASP.NET core Web API` project
+Create new `ASP.NET core Web API` project:
 
-- Name it whatever you want
-- ✓ enable OpenAPI support
-- ✓ use controllers (controllers provide end points)
+- Name it whatever you want.
+- ✓ enable OpenAPI support.
+- ✓ use controllers (controllers provide end points).
 
 ## 2. SET UP TESTING WITH OPENAPI / SCALAR
 
@@ -62,12 +62,12 @@ app.Run();
 - _NOTE: If you need the localhost, you can find it in launchSettings.json_
 
 ### 2.b ENABLING SCALAR (RECOMMENDED):
-  - Browse the package manager for Scalar and download `Scalar.AspNetCore`
+  - Browse the package manager for Scalar and download `Scalar.AspNetCore`.
   - Next, add the following code to `Program.cs` in the HTTP configuration
     request pipeline: 
-  - ```csharp
-    app.MapScalarApiReference();
-    ```
+```csharp
+app.MapScalarApiReference();
+```
 
 ```csharp
 Program.cs
