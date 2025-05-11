@@ -16,11 +16,11 @@ that allowed you to work with your API, like Postman. Since it's no longer being
 supported, you can use the `OpenAPI` spec or `Scalar` (recommended).
 
 ### 2.a ENABLING OPENAPI SUPPORT
-- If you ✓ enable OpenAPI support, the following code below is auto generated and you don't need to make any changes:
+- If you ✓ enable OpenAPI support, the following code below is auto generated in Program.cs and you don't need to make any changes:
 ```csharp
 app.MapOpenApi();
 ```
-- This gets configured in `Program.cs` in the HTTP request pipeline:
+- This gets configured in the HTTP request pipeline:
 ```csharp
 Program.cs
 
@@ -42,11 +42,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     // AUTO GENERATED:
-    //* this line enables openapi supportand is added by default when you ✓ enable OpenAPI support*
+    //* this line enables OpenApi support and is auto generated when you ✓ enable OpenAPI support*
     app.MapOpenApi();
 }
 
-// The code below is auto generated
+// AUTO GENERATED:
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -62,7 +62,7 @@ app.Run();
 - _NOTE: If you need the localhost, you can find it in launchSettings.json_
 
 ### 2.b ENABLING SCALAR (RECOMMENDED):
-  - Right click add a new NuGet package to your API
+  - Add a new NuGet package to your API.
   - Browse the package manager for Scalar and download the package
     `Scalar.AspNetCore`
   - Next, add the following code to your `Program.cs` in the HTTP configuration
@@ -71,30 +71,33 @@ app.Run();
     app.MapScalarApiReference();
     ```
 
-
 ```csharp
 Program.cs
 
+// AUTO GENERATED:
 // Configure the HTTP request pipeline.
 var builder = WebApplication.CreateBuilder(args);
 
+// AUTO GENERATED:
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// AUTO GENERATED:
 var app = builder.Build();
 
+// AUTO GENERATED:
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // this line handles OpenApi and is added by default when you ✓ enable OpenAPI support
+    // AUTO GENERATED:
     app.MapOpenApi();
-    // after the package has been added, add this line to utilize scalar:
+    //* This line enables Scalar API support*
     app.MapScalarApiReference();
 }
 
+// AUTO GENERATED:
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
