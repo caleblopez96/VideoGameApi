@@ -2,11 +2,11 @@
 
 ## 1. CREATE PROJECT
 
-Create new `ASP.NET core Web API` project
+Create new `ASP.NET core Web API` project:
 
-- Name it whatever you want
-- ✓ enable OpenAPI support
-- ✓ use controllers (controllers provide end points)
+- Name it whatever you want.
+- ✓ enable OpenAPI support.
+- ✓ use controllers (controllers provide end points).
 
 ## 2. SET UP TESTING WITH OPENAPI / SCALAR
 
@@ -22,7 +22,7 @@ app.MapOpenApi();
 ```
 - This gets configured in the HTTP request pipeline:
 ```csharp
-Program.cs
+// Program.cs
 
 // AUTO GENERATED:
 // Configure the HTTP request pipeline.
@@ -62,15 +62,15 @@ app.Run();
 - _NOTE: If you need the localhost, you can find it in launchSettings.json_
 
 ### 2.b ENABLING SCALAR (RECOMMENDED):
-  - Browse the package manager for Scalar and download `Scalar.AspNetCore`
+  - Browse the package manager for Scalar and download `Scalar.AspNetCore`.
   - Next, add the following code to `Program.cs` in the HTTP configuration
     request pipeline: 
-  - ```csharp
-    app.MapScalarApiReference();
-    ```
+```csharp
+app.MapScalarApiReference();
+```
 
 ```csharp
-Program.cs
+// Program.cs
 
 // AUTO GENERATED:
 // Configure the HTTP request pipeline.
@@ -112,7 +112,7 @@ app.Run();
 - _NOTE: If you need the localhost, you can find it in launchSettings.json_
 
 ```json
-launchSettings.json
+// launchSettings.json
 
 "https": {
       "commandName": "Project",
@@ -126,13 +126,15 @@ launchSettings.json
 
 ## 3. CREATE YOUR MODEL(S)
 
-A model is a simple class that represents a data structure in your app —
+A model is a class that represents a data structure in your app —
 essentially a blueprint for the kind of data you'll work with.
 
-- Create a Models folder and start creating Models. Example:
+- Create a Models folder and start creating Models.
+
+Example:
 
 ```csharp
-VideoGame.cs
+// VideoGame.cs
 
 namespace VideoGameApi.Models
 {
@@ -153,19 +155,17 @@ A controller is a C# class that defines your routes and endpoints for handling
 incoming HTTP requests `GET`, `PUT`, `POST`, `DELETE` → `[HttpGet]`,
 `[HttpPut]`, `[HttpPost]`, `[HttpDelete]`, etc...
 
-- Each method inside the controller should map to an endpoint and should be
-  responsible for handling a specific request type or operation.
-  - Create a Controllers folder.
-  - Begin creating your Controllers (refer to `VideoGameController.cs` to see a
-    really good example of what a controller file looks like).
-  - Create and test each route using Scalar. Test each route after you create
-    it. Make sure it works before moving on.
-  - The routes should return HTTP response codes (200, 201, 400, 404 etc...)
+Each method inside the controller should map to an endpoint and should be responsible for handling a specific request type or operation.
 
+Create a folder to hold your Controllers:
+- Create your Controllers (refer to `VideoGameController.cs` to see an example).
+- Create and test your routes using Scalar. 
+  - _The routes should return HTTP response codes (200, 201, 400, 404 etc...) using controller base methods_
+
+Example of an HTTP method returning HTTP response code:
 ```csharp
-VideoGameController.cs
+// VideoGameController.cs
 
-// EXAMPLE of an HTTP method returning HTTP response code:
 [HttpGet]
    public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
    {
@@ -175,22 +175,22 @@ VideoGameController.cs
 
 ## 5. IMPLEMENT YOUR DATABASE CONTEXT AND ENTITY FRAMEWORK
 
-Implementing a database allows you to store data persistently. Make sure to have
+Implementing a database allows you to store data persistently. For the next steps make sure to have
 `SQL Server` installed.
 
 The `Entity Framework` (EF Core) is an Object-Relational Mapper (ORM) that makes
-it easier to work with your database using C# objects instead of writing raw SQL
+it easier to work with your database using C# objects and migrations instead of writing raw SQL
 queries.
 
-- To start, create a folder to hold your db context. This example uses
-  `Data.VideoGameDbContext.cs`
-- You'll need to install the `MicrosoftEntityFrameworkCore` and add the
-  following using statement:
+To start, create a folder to hold your db context. This example uses `VideoGameDbContext` in the `Data` folder.
+
+Next Install the `MicrosoftEntityFrameworkCore`.
+  - Don't forget to Add the proper using statment to your DbContext file:
 
 ```csharp
 VideoGameDbContext.cs
 
-// add this line:
+//* add this line: *
 using Microsoft.EntityFrameworkCore;
 
 namespace VideoGameApi.Data
@@ -203,15 +203,8 @@ namespace VideoGameApi.Data
 }
 ```
 
-- This should trigger red squigglies. `ctrl + .` brings up a context menu to
-  debug
-- Inside of there should be an option: install package
-  `Microsoft.Entity.FrameworkCore`
-- If the option isn't in the little menu, just right click on your Api folder
-  and add NuGet package. search for: `Microsoft.Entity.FrameworkCore`
-
-- Next step is to add a database set:
-  - To do so, open the `VideoGameDbContext.cs` file and add the following:
+Now add a database set:
+ - To do so, open the your DbContext file `VideoGameDbContext.cs` and add the following:
 
 ```csharp
 VideoGameDbContext.cs
@@ -220,21 +213,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace VideoGameApi.Data
 {
-    // add this class and extend DbContext(options):
-    // add this line:
+    //* add this class and extend DbContext(options): *
+    //* add this line: *
     public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
     {
-        // best practice:
         public DbSet<VideoGame> VideoGames => Set<VideoGame>();
     }
 }
 ```
 
-- Next you need to tell the application where to find the database:
+Next you need to tell the application where to find the database:
   - To do so, open `appsettings.json` and add your connection string:
 
 ```json
-appSettings.json
+// appSettings.json
 
 {
   // add this:
@@ -251,45 +243,45 @@ appSettings.json
 }
 ```
 
-    *Note this way is preferred because you can use the same name in Azure*
+_This is the preferred way because you can use the same name in Azure_
 
-- Register the DbContext now in `Program.cs` using dependency injection:
-  - Before you do, download the `Microsoft.EntityFrameworkCore.SqlServer` NuGet
-    package
-  - Make sure to include `using Microsoft.EntityFrameworkCore`
-  - Then add this line:
+Now register the DbContext in `Program.cs` using dependency injection:
+- Before you do, make sure to download the `Microsoft.EntityFrameworkCore.SqlServer` NuGet package
+    - include `using Microsoft.EntityFrameworkCore`
+- Then add this line:
     `builder.Services.AddDbContext<VideoGameDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));`
 
 ```csharp
-Program.cs
+// Program.cs
 
 // These are the dependencies we just added + the Scalar dependency from earlier
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using VideoGameApi.Data;
 
+// AUTO GENERATED:
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// AUTO GENERATED:
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Add this line:
+//* Add this line: *
 builder.Services.AddDbContext<VideoGameDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// AUTO GENERATED:
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// AUTO GENERATED:
 if (app.Environment.IsDevelopment())
 {
-    // this line handles scalar
     app.MapScalarApiReference();
     app.MapOpenApi();
 }
 
+// AUTO GENERATED:
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -304,44 +296,34 @@ app.Run();
 Code-first migration allows you to write C# code and turn it into database
 related stuff.
 
-- First step is to download the NuGet package
-  `Microsoft.Entity.FrameworkCore.Tools`
-- Then open the package manager console and make sure the default project is set
-  to the correct project
-- Run the following command in the package manager console:
-  `Add-Migration Initial`
-  - Running this command should create and open a migration file. Something
-    like: `Migrations.20250508194021_Initial.cs`
-  - This file contains the code that creates the SQL columns based off the C#
-    code
-- Now, despite not having a db yet, run the following command in the package
-  manager console: `Update-Database`
-  - This command creates the database
-- Now open up SQL Server and make sure you're connected properly to
-  `LAPTOP/SQLEXPRESS`
-  - Under databases you should see your newly created database, but the data
-    should be empty
-- At this point, you can write manual SQL queries to add data or you can seed
-  data. Seed data is probably best.
+To get started download `Microsoft.Entity.FrameworkCore.Tools` NuGet package.
+
+Next open the package manager console and make sure the default project is set to the correct project
+- Run the following command in the package manager console: `Add-Migration Initial`
+  - Running this command should create and open a migration file. Something like: `Migrations.20250508194021_Initial.cs`. The file contains the code that creates the SQL columns based off the C# code
+- Now, despite not having a db yet, run `Update-Database` in the package manager console to create the database.
+
+Now open up SQL Server and make sure you're connected properly (`LAPTOP/SQLEXPRESS`)
+  - Under databases you should see your newly created database, but the data should be empty.
+
+At this point, you can write manual SQL queries but we're going to use seed migration instead.
 
 ## 7. ADD SEED DATA
 
 Seed data allows you to avoid writing SQL queries to seed data into the db.
 
-- Navigate to `VideoGameDbContext.cs` class and `override` the
-  `OnModelCreating()` method:
-  `protected override void OnModelCreating(ModelBuilder modelBuilder){ }`
+Navigate to `VideoGameDbContext.cs` class and override the `OnModelCreating()` method:
+```csharp protected override void OnModelCreating(ModelBuilder modelBuilder){ }```
 
 ```csharp
 VideoGameDbContext.cs
 
 public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
 {
-    // best practice:
     public DbSet<VideoGame> VideoGames => Set<VideoGame>();
 
     // override the OnModelCreating method
-    // add this line:
+    //* add this line: *
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
@@ -349,20 +331,19 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
 }
 ```
 
-- Next add: `base.OnModelCreating(modelBuilder);`
+- Next add your model builder: `base.OnModelCreating(modelBuilder);`
 
 ```csharp
 VideoGameDbContext.cs
 
 public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
 {
-    // best practice:
     public DbSet<VideoGame> VideoGames => Set<VideoGame>();
 
     // override the OnModelCreating method
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // add this:
+        //* add this: *
         base.OnModelCreating(modelBuilder);
     {
 }
@@ -401,28 +382,24 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
   `Add-Migration Seeding`
   - This should create another migration file. Somthing like:
     (20250508223857_Seeding.cs)
-- Next run the following command in the package manager console:
-  `Update-Database`
-  - This inserts the seed data to database
-- To confirm it worked:
-  - Open SSMS: VideoGameDb > Tables > dbo.VideoGames
-  - Right click execute SQL to force update. You should see your seed data
+
+- Next insert the seed data into the db by run the following command in the package manager console: `Update-Database`
+  - To confirm it worked:
+    - Open SSMS: VideoGameDb > Tables > dbo.VideoGames
+    - Right click execute SQL to force update. You should see your seed data
 
 ## 8. IMPLEMENT CRUD WITH ENTITY FRAMEWORK
-
-- The way this tutorial plays out, you set up the project without features, then
-  you add CRUD with entity framework after.
 
 In `VideoGameController.cs` the line of code:
 `private readonly VideoGameDbContext _context = context;` adds the db context
 you use to reference objects from.
 
-- Prior to this there were three VideoGame objects being used.
-  - Delete the mock data and replace it with the db context. Below is an example
-    of before and after. BEFORE:
+Before this change is made you might just add some mock data to use temporarily. Delete the mock data and replace it with the db context. Below is an example
+    of before and after. 
 
+BEFORE:
 ```csharp
-VideoGameController.cs
+// VideoGameController.cs
 
 namespace VideoGameApi.Controllers
 {
@@ -469,7 +446,7 @@ namespace VideoGameApi.Controllers
 AFTER:
 
 ```csharp
-VideoGameController.cs
+// VideoGameController.cs
 
 namespace VideoGameApi.Controllers
 {
@@ -477,10 +454,9 @@ namespace VideoGameApi.Controllers
     [ApiController]
     public class VideoGameController(VideoGameDbContext context) : ControllerBase
     {
-        // This line:
+        // * This line: *
         private readonly VideoGameDbContext _context = context; // this makes it so that you can reference the database
 
-        // get all video games
         [HttpGet]
         public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
         {
@@ -490,16 +466,15 @@ namespace VideoGameApi.Controllers
 }
 ```
 
-- In `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and
-  made methods async with `async/await`.
+- In `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and made methods async with `async/await`.
 - Additionally, instead of referring to the videoGames list:
-  `List<VideoGame> VideoGames = [...];`, refer to the db context (\_content)
-- BEFORE:
+  `List<VideoGame> VideoGames = [...];`, refer to the db context (_content).
+
+BEFORE:
 
 ```csharp
-VideoGameController.cs
+// VideoGameController.cs
 
-// get all video games
     [HttpGet]
     // before using ActionResult<T<T>>
     public ActionResult<List<VideoGame>> GetVideoGame()
@@ -512,9 +487,8 @@ VideoGameController.cs
 - AFTER:
 
 ```csharp
-VideoGameController.cs
+// VideoGameController.cs
 
-// get all video games
     [HttpGet]
     // after using async and Task<T<T<T>>>:
     public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
