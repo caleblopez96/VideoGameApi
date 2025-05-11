@@ -14,7 +14,7 @@ When you create an API, you need to also create documentation and you need a way
 
 ### 2.a ENABLING OPENAPI SUPPORT
 
-If you ✓ enabled OpenAPI support during project creation, the following code is auto-generated in Program.cs:
+If you ✓ enabled OpenAPI support during project creation, the following code (and comments) is auto-generated in Program.cs:
 
 ```csharp
 // Program.cs
@@ -346,15 +346,16 @@ namespace VideoGameApi.Data
 
 ## 8. IMPLEMENT CRUD WITH ENTITY FRAMEWORK
 
-Update your controller to use the database context instead of hardcoded data:
+In `VideoGameController.cs` the line of code:
+`private readonly VideoGameDbContext _context = context;` adds the db context
+you use to reference objects from.
 
+Before this change is made you might just add some mock data to use temporarily. Delete the mock data and replace it with the db context. Below is an example
+    of before and after. 
+
+BEFORE:
 ```csharp
-// Controllers/VideoGameController.cs
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using VideoGameApi.Data;
-using VideoGameApi.Models;
+// VideoGameController.cs
 
 namespace VideoGameApi.Controllers
 {
@@ -362,92 +363,99 @@ namespace VideoGameApi.Controllers
     [ApiController]
     public class VideoGameController(VideoGameDbContext context) : ControllerBase
     {
-        private readonly VideoGameDbContext _context = context;
-
-        // GET: api/VideoGame
+        public static List<VideoGame> VideoGames = [
+           new VideoGame
+           {
+               Id = 1,
+               Title = "Spider-Man 2",
+               Platform = "PS5",
+               Developer = "Insomniac Games",
+               Publisher = "Sony Interactive Entertainment"
+           },
+           new VideoGame
+           {
+               Id = 2,
+               Title = "The Legend of Zelda: Breath of the Wild",
+               Platform = "Nintendo Switch",
+               Developer = "Nintendo EPD",
+               Publisher = "Nintendo"
+            },
+            new VideoGame
+            {
+                Id = 3,
+                Title = "CyberPunk 2077",
+                Platform = "PC",
+                Developer = "CD Projekt Red",
+                Publisher = "CD Projekt"
+            }
+         ];
+         // get all video games
         [HttpGet]
-        public async Task<ActionResult<List<VideoGame>>> GetVideoGames()
+        public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
         {
-            return Ok(await _context.VideoGames.ToListAsync());
-        }
-
-        // GET: api/VideoGame/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<VideoGame>> GetVideoGame(int id)
-        {
-            var videoGame = await _context.VideoGames.FindAsync(id);
-            
-            if (videoGame == null)
-            {
-                return NotFound();  // Returns 404 if not found
-            }
-            
-            return Ok(videoGame);  // Returns 200 with the found game
-        }
-
-        // POST: api/VideoGame
-        [HttpPost]
-        public async Task<ActionResult<VideoGame>> CreateVideoGame(VideoGame videoGame)
-        {
-            _context.VideoGames.Add(videoGame);
-            await _context.SaveChangesAsync();
-            
-            return CreatedAtAction(nameof(GetVideoGame), new { id = videoGame.Id }, videoGame);  // Returns 201 with the created game
-        }
-
-        // PUT: api/VideoGame/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVideoGame(int id, VideoGame videoGame)
-        {
-            if (id != videoGame.Id)
-            {
-                return BadRequest();  // Returns 400 if IDs don't match
-            }
-            
-            _context.Entry(videoGame).State = EntityState.Modified;
-            
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VideoGameExists(id))
-                {
-                    return NotFound();  // Returns 404 if game doesn't exist
-                }
-                throw;
-            }
-            
-            return NoContent();  // Returns 204 on successful update
-        }
-
-        // DELETE: api/VideoGame/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVideoGame(int id)
-        {
-            var videoGame = await _context.VideoGames.FindAsync(id);
-            
-            if (videoGame == null)
-            {
-                return NotFound();  // Returns 404 if not found
-            }
-            
-            _context.VideoGames.Remove(videoGame);
-            await _context.SaveChangesAsync();
-            
-            return NoContent();  // Returns 204 on successful delete
-        }
-
-        private bool VideoGameExists(int id)
-        {
-            return _context.VideoGames.Any(e => e.Id == id);
+            return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
         }
     }
 }
 ```
 
+AFTER:
+
+```csharp
+// VideoGameController.cs
+
+namespace VideoGameApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class VideoGameController(VideoGameDbContext context) : ControllerBase
+    {
+        // * This line: *
+        private readonly VideoGameDbContext _context = context; // this makes it so that you can reference the database
+
+        [HttpGet]
+        public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+        {
+            return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+        }
+    }
+}
+```
+
+- In `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and made methods async with `async/await`.
+- Additionally, instead of referring to the videoGames list:
+  `List<VideoGame> VideoGames = [...];`, refer to the db context (_content).
+
+BEFORE:
+
+```csharp
+// VideoGameController.cs
+
+    [HttpGet]
+    // before using ActionResult<T<T>>
+    public ActionResult<List<VideoGame>> GetVideoGame()
+    {
+        // before:
+        return Ok(VideoGames); // returns 200 (Ok) if found
+    }
+```
+
+- AFTER:
+
+```csharp
+// VideoGameController.cs
+
+    [HttpGet]
+    // after using async and Task<T<T<T>>>:
+    public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+    {
+        // after using await and referring to the db context (_context)
+        return Ok(await _context.VideoGames.ToListAsync()); // returns 200 (Ok) if found
+    }
+```
+
 ---
+
 
 **Helpful Tips:**
 
