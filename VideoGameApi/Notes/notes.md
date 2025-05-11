@@ -63,7 +63,7 @@ app.Run();
 
 ### 2.b ENABLING SCALAR (RECOMMENDED):
   - Add a new NuGet package to your API.
-  - Browse the package manager for Scalar and download the package
+   - Browse the package manager for Scalar and download the package
     `Scalar.AspNetCore`
   - Next, add the following code to your `Program.cs` in the HTTP configuration
     request pipeline: 
@@ -107,8 +107,10 @@ app.MapControllers();
 app.Run();
 ```
 
-- Then open: `https://{localhost:XXXX}/scalar/v1` →
-  `https://localhost:7227/scalar/v1`
+
+- To test/view/use the `Scalar` spec go to:
+  - `https://{localhost:XXXX}/scalar/v1`
+  - EXAMPLE: `https://{localhost:7227}/scalar/v1`
 - _NOTE: If you need the localhost, you can find it in launchSettings.json_
 
 ```json
