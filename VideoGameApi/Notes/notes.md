@@ -2,11 +2,11 @@
 
 ## 1. CREATE PROJECT
 
-Create new `ASP.NET core Web API` project
+Create new `ASP.NET core Web API` project:
 
-- Name it whatever you want
-- ✓ enable OpenAPI support
-- ✓ use controllers (controllers provide end points)
+- Name it whatever you want.
+- ✓ enable OpenAPI support.
+- ✓ use controllers (controllers provide end points).
 
 ## 2. SET UP TESTING WITH OPENAPI / SCALAR
 
@@ -62,14 +62,12 @@ app.Run();
 - _NOTE: If you need the localhost, you can find it in launchSettings.json_
 
 ### 2.b ENABLING SCALAR (RECOMMENDED):
-  - Add a new NuGet package to your API.
-   - Browse the package manager for Scalar and download the package
-    `Scalar.AspNetCore`
-  - Next, add the following code to your `Program.cs` in the HTTP configuration
+  - Browse the package manager for Scalar and download `Scalar.AspNetCore`.
+  - Next, add the following code to `Program.cs` in the HTTP configuration
     request pipeline: 
-  - ```csharp
-    app.MapScalarApiReference();
-    ```
+```csharp
+app.MapScalarApiReference();
+```
 
 ```csharp
 Program.cs
@@ -93,7 +91,7 @@ if (app.Environment.IsDevelopment())
 {
     // AUTO GENERATED:
     app.MapOpenApi();
-    //* This line enables Scalar API support*
+    //* Add this line to enable Scalar API support*
     app.MapScalarApiReference();
 }
 
@@ -107,7 +105,7 @@ app.MapControllers();
 app.Run();
 ```
 
-
+- After you've added the code to enable scalar, you can now view your api with a GUI.
 - To test/view/use the `Scalar` spec go to:
   - `https://{localhost:XXXX}/scalar/v1`
   - EXAMPLE: `https://{localhost:7227}/scalar/v1`
