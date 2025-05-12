@@ -47,15 +47,14 @@ app.Run();
 
 To test/view/use the `OpenAPI` spec go to:
 - `https://{localhost:XXXX}/openapi/v1/json`
-- EXAMPLE: `https://localhost:7227/openapi/v1.json`
-- NOTE: You can find the localhost port in launchSettings.json
+
+_NOTE: You can find the localhost port in `launchSettings.json` under `applicationUrl`_
 
 ### 2.b ENABLING SCALAR (RECOMMENDED)
 
-1. Install the required package:
-   - Browse the package manager for Scalar and download `Scalar.AspNetCore`.
+1. Install `Scalar.AspNetCore` NuGet package to the project.
 
-2. Add the required using statement to Program.cs:
+2. Add the required using statement to `Program.cs`:
    ```csharp
    using Scalar.AspNetCore;
    ```
@@ -101,8 +100,8 @@ app.Run();
 
 To test/view/use the `Scalar` spec go to:
 - `https://{localhost:XXXX}/scalar/v1`
-- EXAMPLE: `https://localhost:7227/scalar/v1`
-- NOTE: You can find the localhost port in launchSettings.json
+
+_NOTE: You can find the localhost port in `launchSettings.json` under `applicationUrl`_
 
 ```json
 // launchSettings.json
@@ -230,11 +229,11 @@ namespace VideoGameApi.Data
 ```
 
 2. Register the DbContext in `Program.cs` using dependency injection.
- - Add `Microsoft.EntityFrameworkCore` to `Program.cs`
+ - To do so, add `Microsoft.EntityFrameworkCore` to `Program.cs`
 ```csharp
 using Microsoft.EntityFrameworkCore;
 ```
-- Next add the following line of code to `Program.cs`
+- Next add the db context to `Program.cs`
 ```csharp
 builder.Services.AddDbContext<VideoGameDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -280,9 +279,9 @@ app.Run();
 
 Code-first migration allows you to write C# code and turn it into database structures.
 
-1. Make sure you've installed `Microsoft.EntityFrameworkCore.Tools` NuGet package
+1. Make sure you've installed `Microsoft.EntityFrameworkCore.Tools` `uGet` package
 
-2. Open the Package Manager Console and make sure the default project is set to your project
+2. Open the `Package Manager Console` and make sure the default project is set to your project
 
 3. Create the initial migration by typing the following command in the `Package Manager Console`:
    ```
@@ -295,7 +294,7 @@ Code-first migration allows you to write C# code and turn it into database struc
    Update-Database
    ```
 
-5. Next, open `SSMS` and verify your database was created under the name specified in your connection string
+5. Next, open `SSMS` and verify your database was created under the name specified in your `connection string` in the file `appsettings.json`
 
 ## 7. ADD SEED DATA
 
@@ -386,11 +385,12 @@ public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : 
 
 ## 8. IMPLEMENT CRUD WITH ENTITY FRAMEWORK
 
-In `VideoGameController.cs` the line of code:
-`private readonly VideoGameDbContext _context = context;` adds the db context
-you use to reference objects from.
+In `VideoGameController.cs` the following line of code adds the db context you use to reference objects from:
+```csharp
+private readonly VideoGameDbContext _context = context;
+```
 
-Before this change is made you might just add some mock data to use temporarily. Delete the mock data and replace it with the db context. Below is an example of before and after. 
+_In the BEFORE example below, I started the project with 3 VideoGames just to test things until I added my db context. The before shows the code with the 3 video games, then replaced for the db context_
 
 BEFORE:
 ```csharp
@@ -461,10 +461,17 @@ namespace VideoGameApi.Controllers
 }
 ```
 
-- In `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and made methods async with `async/await`.
-- Additionally, instead of referring to the videoGames list:
-  `List<VideoGame> VideoGames = [...];`, now you refer to the db context (_content).
+Next, in `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and made methods were made async with `async/await`.
 
+Additionally, the way you refer to your objects changes. 
+- Before you would reference objects from
+```csharp
+List<VideoGame> VideoGames = [...];
+```
+- Now, reference the objects by the db context
+```csharp
+_context.VideoGames
+```
 BEFORE:
 
 ```csharp
