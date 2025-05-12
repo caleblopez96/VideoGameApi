@@ -52,7 +52,7 @@ _NOTE: You can find the localhost port in `launchSettings.json` under `applicati
 
 ### 2.b ENABLING SCALAR (RECOMMENDED)
 
-1. Install `Scalar.AspNetCore` NuGet package to the project.
+1. Install `Scalar.AspNetCore` `NuGet` package to the project.
 
 2. Add the required using statement to `Program.cs`:
    ```csharp
@@ -185,6 +185,10 @@ _* you dont need to add these packages to any specific file yet, they just need 
 ```csharp    
 using Microsoft.EntityFrameworkCore;    
 ```
+- Next, define your database set inside the class
+```csharp
+public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+```
 
 ```csharp
 // VideoGameDbContext.cs
@@ -196,7 +200,7 @@ namespace VideoGameApi.Data
 {
     public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
     {
-        // Define your database sets
+        // * Add code here *
         public DbSet<VideoGame> VideoGames => Set<VideoGame>();
     }
 }
@@ -204,13 +208,20 @@ namespace VideoGameApi.Data
 
 ### 5.b CONFIGURE DATABASE CONNECTION
 
-1. Open `appsettings.json` and add your connection string:
+Open `appsettings.json` and add your connection string:
+
+1. Define a new `ConnectionStrings` object with a connection name like `DefaultConnection`
 ```json
 "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"
+    "DefaultConnection": " "
   }
 ```
+2. Add the connection string to `DefaultConnection`
+```csharp
+"Server=localhost\\SQLExpress;Database={DatabaseName};Trusted_Connection=true;TrustServerCertificate=true"
+```
 
+Finished Product: 
 ```json
 // appsettings.json
 
@@ -228,7 +239,7 @@ namespace VideoGameApi.Data
 }
 ```
 
-2. Register the DbContext in `Program.cs` using dependency injection.
+3. Now, register the DbContext in `Program.cs` using dependency injection.
  - To do so, add `Microsoft.EntityFrameworkCore` to `Program.cs`
 ```csharp
 using Microsoft.EntityFrameworkCore;
@@ -279,7 +290,7 @@ app.Run();
 
 Code-first migration allows you to write C# code and turn it into database structures.
 
-1. Make sure you've installed `Microsoft.EntityFrameworkCore.Tools` `uGet` package
+1. Make sure you've installed `Microsoft.EntityFrameworkCore.Tools` `NuGet` package
 
 2. Open the `Package Manager Console` and make sure the default project is set to your project
 
