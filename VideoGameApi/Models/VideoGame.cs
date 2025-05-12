@@ -1,5 +1,4 @@
 ﻿// video game model
-
 namespace VideoGameApi.Models
 {
     public class VideoGame

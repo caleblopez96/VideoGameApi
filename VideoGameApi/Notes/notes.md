@@ -10,11 +10,11 @@ Create new `ASP.NET Core Web API` project:
 
 ## 2. SET UP TESTING WITH OPENAPI / SCALAR
 
-When you create an API, you need to also create documentation and you need a way to test it as you work on it. Previously, the solution was to use Swagger - a UI that allowed you to work with your API, like Postman. Since it's no longer being supported, you can use the `OpenAPI` spec or `Scalar` (recommended).
+When you create an API, you need to create documentation and you need a way to test it as you work on it. Previously, the solution was to use Swagger - a UI that allowed you to work with your API, like Postman. Since it's no longer being supported, you can use the `OpenAPI` spec or `Scalar` (recommended).
 
 ### 2.a ENABLING OPENAPI SUPPORT
 
-If you ✓ enabled OpenAPI support during project creation, the following code (and comments) is auto-generated in Program.cs:
+If you ✓ enabled OpenAPI support during project creation, the following code and comments are auto-generated in Program.cs:
 
 ```csharp
 // Program.cs
@@ -65,7 +65,7 @@ To test/view/use the `OpenAPI` spec go to:
    app.MapScalarApiReference();
    ```
 
-Here's how your Program.cs should look after adding Scalar support:
+Here's how your `Program.cs` should look after adding Scalar support:
 
 ```csharp
 // Program.cs
@@ -173,18 +173,25 @@ The `Entity Framework` (EF Core) is an Object-Relational Mapper (ORM) that makes
 ### 5.a CREATE DATABASE CONTEXT
 
 1. Create a folder (e.g., `Data`) to hold your database context
-2. Install the required packages:
+2. Install the required packages into your project:
    - `Microsoft.EntityFrameworkCore` 
    - `Microsoft.EntityFrameworkCore.SqlServer`
    - `Microsoft.EntityFrameworkCore.Tools`
 
+_* you dont need to add these packages to any specific file yet, they just need to be added to the project *_
+
+
 3. Create your DbContext class:
+ - Add the `Microsoft.EntityFrameworkCore` dependency to `VideoGameDbContext.cs`
+```csharp    
+using Microsoft.EntityFrameworkCore;    
+```
 
 ```csharp
-// Data/VideoGameDbContext.cs
+// VideoGameDbContext.cs
 
-using Microsoft.EntityFrameworkCore;
-using VideoGameApi.Models;  // Add this to reference your model
+using Microsoft.EntityFrameworkCore; //* Add this using statment here*
+using VideoGameApi.Models;
 
 namespace VideoGameApi.Data
 {
@@ -199,6 +206,11 @@ namespace VideoGameApi.Data
 ### 5.b CONFIGURE DATABASE CONNECTION
 
 1. Open `appsettings.json` and add your connection string:
+```json
+"ConnectionStrings": {
+    "DefaultConnection": "Server=localhost\\SQLExpress;Database=VideoGameDb;Trusted_Connection=true;TrustServerCertificate=true"
+  }
+```
 
 ```json
 // appsettings.json
@@ -217,14 +229,23 @@ namespace VideoGameApi.Data
 }
 ```
 
-2. Register the DbContext in `Program.cs` using dependency injection:
+2. Register the DbContext in `Program.cs` using dependency injection.
+ - Add `Microsoft.EntityFrameworkCore` to `Program.cs`
+```csharp
+using Microsoft.EntityFrameworkCore;
+```
+- Next add the following line of code to `Program.cs`
+```csharp
+builder.Services.AddDbContext<VideoGameDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+```
 
 ```csharp
 // Program.cs
 
-using Microsoft.EntityFrameworkCore;  // Add this using statement
+using Microsoft.EntityFrameworkCore;  //* Add the using statement here *
 using Scalar.AspNetCore;
-using VideoGameApi.Data;  // Add this to reference your DbContext
+using VideoGameApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -233,6 +254,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Register your DbContext
+// * Add this line here *
 builder.Services.AddDbContext<VideoGameDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

@@ -14,7 +14,7 @@ When you create an API, you need to also create documentation and you need a way
 
 ### 2.a ENABLING OPENAPI SUPPORT
 
-If you ✓ enabled OpenAPI support during project creation, the following code (and comments) is auto-generated in Program.cs:
+If you ✓ enabled OpenAPI support during project creation, the following code (and comments) are auto-generated in Program.cs:
 
 ```csharp
 // Program.cs
@@ -32,7 +32,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // This line enables OpenAPI support
+    //* This line enables OpenAPI support *
     app.MapOpenApi();
 }
 
@@ -183,8 +183,8 @@ The `Entity Framework` (EF Core) is an Object-Relational Mapper (ORM) that makes
 ```csharp
 // Data/VideoGameDbContext.cs
 
-using Microsoft.EntityFrameworkCore;
-using VideoGameApi.Models;  // Add this to reference your model
+using Microsoft.EntityFrameworkCore; //* Add this using statement *
+using VideoGameApi.Models;  // * Add this to reference your model *
 
 namespace VideoGameApi.Data
 {
