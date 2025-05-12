@@ -284,87 +284,105 @@ Code-first migration allows you to write C# code and turn it into database struc
 
 2. Open the Package Manager Console and make sure the default project is set to your project
 
-3. Create the initial migration:
+3. Create the initial migration by typing the following command in the `Package Manager Console`:
    ```
    Add-Migration Initial
    ```
    Running this command should create and open a migration file like `Migrations.20250508194021_Initial.cs`. This file contains the code that creates the SQL columns based off of C# code.
 
-4. Next, Create the database by applying the migration:
+4. Now, despite not having a database yet, apply the migration and create the database by typing the following command in the `Package Manager Console`:
    ```
    Update-Database
    ```
 
-5. Open SQL Server and verify your database was created under the name specified in your connection string
+5. Next, open `SSMS` and verify your database was created under the name specified in your connection string
 
 ## 7. ADD SEED DATA
 
-Seed data allows you to populate your database with initial data without writing SQL queries.
+Seed data allows you to avoid writing SQL queries to seed data into the db.
 
-1. Navigate to your `DbContext` class (e.g., `VideoGameDbContext.cs`) and override the `OnModelCreating()` method:
+Navigate to `VideoGameDbContext.cs` class and override the `OnModelCreating()` method:
+```csharp 
+protected override void OnModelCreating(ModelBuilder modelBuilder){ }
+```
 
 ```csharp
-// Data/VideoGameDbContext.cs
+VideoGameDbContext.cs
 
-using Microsoft.EntityFrameworkCore;
-using VideoGameApi.Models;
-
-namespace VideoGameApi.Data
+public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
 {
-    public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+    public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+    // override the OnModelCreating method
+    //* code goes here: *
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DbSet<VideoGame> VideoGames => Set<VideoGame>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+    {
+}
+```
 
-            // Add seed data
-            modelBuilder.Entity<VideoGame>().HasData(
-                new VideoGame
-                {
-                    Id = 1,
-                    Title = "Spider-Man 2",
-                    Platform = "PS5",
-                    Developer = "Insomniac Games",
-                    Publisher = "Sony Interactive Entertainment"
-                },
-                new VideoGame
-                {
-                    Id = 2,
-                    Title = "The Legend of Zelda: Breath of the Wild",
-                    Platform = "Nintendo Switch",
-                    Developer = "Nintendo EPD",
-                    Publisher = "Nintendo"
-                },
-                new VideoGame
-                {
-                    Id = 3,
-                    Title = "CyberPunk 2077",
-                    Platform = "PC",
-                    Developer = "CD Projekt Red",
-                    Publisher = "CD Projekt"
-                }
-            );
-        }
+- Next add your model builder by adding `base.OnModelCreating(modelBuilder);` to `VideoGameDbContext.cs`
+```csharp
+base.OnModelCreating(modelBuilder);
+```
+
+```csharp
+// VideoGameDbContext.cs
+
+public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+{
+    public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+    // override the OnModelCreating method
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        //* add code here: *
+        base.OnModelCreating(modelBuilder);
+    {
+}
+```
+
+- Next, add the following line of code to `VideoGameDbContext.cs`:
+```csharp
+modelBuilder.Entity<VideoGame>().HasData();
+```
+
+```csharp
+VideoGameDbContext.cs
+
+public class VideoGameDbContext(DbContextOptions<VideoGameDbContext> options) : DbContext(options)
+{
+    // best practice:
+    public DbSet<VideoGame> VideoGames => Set<VideoGame>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // * code goes here (ideally with more seed data): *
+        modelBuilder.Entity<VideoGame>().HasData(
+            new VideoGame
+            {
+                Id = 1,
+                Title = "Spider-Man 2",
+                Platform = "PS5",
+                Developer = "Insomniac Games",
+                Publisher = "Sony Interactive Entertainment"
+            },...
+        );
     }
 }
 ```
 
-2. Create a new migration for the seed data:
-   ```
-   Add-Migration Seeding
-   ```
+- Now run the following command in the `Package Manager Console`:
+  `Add-Migration Seeding`
+  - This should create another migration file. Somthing like `20250508223857_Seeding.cs`
 
-3. Apply the migration to insert the seed data:
-   ```
-   Update-Database
-   ```
-
-4. Verify the seed data was added by:
-   - Opening SQL Server Management Studio (SSMS)
-   - Navigate to VideoGameDb > Tables > dbo.VideoGames
-   - Right-click and select "Select Top 1000 Rows" to view your data
+- Next insert the seed data into the db by runing `Update-Database` in the `Package Manager Console`:
+  - To confirm it worked:
+    - Open `SSMS`: VideoGameDb > Tables > dbo.VideoGames
+    - Right click `execute SQL` to force update. You should see your seed data
 
 ## 8. IMPLEMENT CRUD WITH ENTITY FRAMEWORK
 
@@ -372,8 +390,7 @@ In `VideoGameController.cs` the line of code:
 `private readonly VideoGameDbContext _context = context;` adds the db context
 you use to reference objects from.
 
-Before this change is made you might just add some mock data to use temporarily. Delete the mock data and replace it with the db context. Below is an example
-    of before and after. 
+Before this change is made you might just add some mock data to use temporarily. Delete the mock data and replace it with the db context. Below is an example of before and after. 
 
 BEFORE:
 ```csharp
@@ -446,7 +463,7 @@ namespace VideoGameApi.Controllers
 
 - In `VideoGameController.cs`, `ActionResult<T>` got wrapped in a `Task<T>` and made methods async with `async/await`.
 - Additionally, instead of referring to the videoGames list:
-  `List<VideoGame> VideoGames = [...];`, refer to the db context (_content).
+  `List<VideoGame> VideoGames = [...];`, now you refer to the db context (_content).
 
 BEFORE:
 
