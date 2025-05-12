@@ -1,4 +1,4 @@
-﻿# ASP.NET Core Web API Development Guide
+# ASP.NET Core Web API Development Guide
 
 ## 1. CREATE PROJECT
 
