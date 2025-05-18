@@ -1,12 +1,40 @@
 # ASP.NET Core Web API Development Guide
+This is a step by step guide on how to create an ASP.NET Core Web Api. 
+I learned by watching Patrick God's .Net 9 Web API & Entity Framework
+tutorial on youtube: 
+
+Source: https://www.youtube.com/watch?v=AKjG2tjI07U&list=LL&index=1
 
 ## 1. CREATE PROJECT
 
 Create new `ASP.NET Core Web API` project:
 
-- Name it whatever you want.
-- ✓ Enable OpenAPI support.
-- ✓ Use controllers (controllers provide endpoints).
+1. Name your project.
+2. Select where to save the project.
+3. Choose a solution name:
+ - The solution name should be the same as the project name for small, single-project solutions, or a broader, parent-level name if you plan to include multiple projects in the solution.
+4. Choose whether or not to save the project and solution in the same directory: 
+ - It’s generally recommended to keep them in the same directory for simple projects and separate them for larger, multi-project solutions to keep things organized.
+5. Choose your project framework:
+ - In this example, I used .NET 9.0.
+6. Authentication type is NONE for this example.
+7. ✓ Configure for HTTPS.
+8. Container OS defaults to Linux (leave it).
+9. Container Build Type defaults to Dockerfile (leave it). 
+10. ✓ Enable OpenAPI support.
+11. ✓ Use controllers (controllers provide endpoints).
+
+This scaffolds out a new ASP.NET core web api project with the:
+- `Connected Services`: Shows your database connection
+- `Dependencies`: Contains the `Analyzers`, `Frameworks`, and Nuget `Packages` being used by the project
+- `Properties`: Contains the `launchSettings.json` file
+- `Controllers`: By default, you'll see `WeatherForecastController.cs`. It's included as an example, therefore, you can delete it.
+- `appsettings.json`: Contains settings for your app like connection strings and logging configuration. No need to modify for now.
+- `Program.cs`: Contains the entry point for your application and the code to configure services, middleware, and route handling for your Web API.
+- `WeatherForecast.cs` is the WeatherForecast model. It's included as an example, therefore, you can delete it.
+- `{projectname}.http` is a Visual Studio/Visual Studio Code HTTP request file used for testing your API endpoints directly from the editor — without needing something external like Postman or curl.
+
+Now that you understand a little about the project, follow the next steps to create the api.
 
 ## 2. SET UP TESTING WITH OPENAPI / SCALAR
 
