@@ -17,4 +17,8 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.2.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Notes\" />
+  </ItemGroup>
+
 </Project>
