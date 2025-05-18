@@ -578,8 +578,6 @@ BEFORE:
 
 ---
 
-tst
-
 **Helpful Tips:**
 
 - Type 'prop' then press tab to automatically create property syntax
