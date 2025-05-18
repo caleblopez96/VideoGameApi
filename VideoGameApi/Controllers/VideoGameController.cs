@@ -39,7 +39,7 @@ namespace VideoGameApi.Controllers
         [HttpGet("titles")] // this creates route: /api/VideoGame/titles
         public async Task<ActionResult<List<string>>> GetVideoGameTitle()
         {
-            var titles = _context.VideoGames.Select(vg => vg.Title).ToList();
+            var titles = await _context.VideoGames.Select(vg => vg.Title).ToListAsync();
             return Ok(titles); // returns 200 (Ok) if found
         }
 
@@ -73,7 +73,7 @@ namespace VideoGameApi.Controllers
         [HttpGet("publisher")]
         public async Task<ActionResult<List<string>>> GetVideoGamePublishers()
         {
-            var publisher = _context.VideoGames.Select(vg => vg.Publisher).ToList();
+            var publisher = await _context.VideoGames.Select(vg => vg.Publisher).ToListAsync();
             return Ok(publisher); // returns 200 (Ok) if found
         }
 
@@ -81,10 +81,10 @@ namespace VideoGameApi.Controllers
         [HttpGet("platform/{platformName}")]
         public async Task<ActionResult<List<VideoGame>>> GetVideoGamesByPlatform(string platformName)
         {
-            var games = _context.VideoGames.Where(game =>
+            var games = await _context.VideoGames.Where(game =>
                 game.Platform != null &&
                 EF.Functions.Like(game.Platform.ToLower(), platformName.ToLower())
-            ).ToList();
+            ).ToListAsync();
 
             if (games.Count == 0)
             {
