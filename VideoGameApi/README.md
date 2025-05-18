@@ -244,7 +244,7 @@ Finished Product:
 ```csharp
 using Microsoft.EntityFrameworkCore;
 ```
-- Next add the db context to `Program.cs`
+- Next add the db context and configure connection with the db using the following line of code in `Program.cs`
 ```csharp
 builder.Services.AddDbContext<VideoGameDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
