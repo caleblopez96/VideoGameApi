@@ -184,12 +184,49 @@ Example HTTP method returning HTTP response code:
 ```csharp
 // VideoGameController.cs
 
-[HttpGet]
+[HttpGet] 
 public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
 {
     return Ok(await _context.VideoGames.ToListAsync()); // the Ok() method returns HTTP status code 200 (Ok) if found.
 }
 ```
+Broken down:
+
+- The HTTP attribute
+```csharp
+[HttpGet]
+```
+
+- GetVideoGame() method
+```
+public async Task<ActionResult<List<VideoGame>>> GetVideoGame()
+```
+ - access modifier: `public` 
+    - The access modifier being used so this method can be used outside of the controller.
+ - return type: `Task<ActionResult<List<VideoGame>>>`
+    - `Task<>`: indicates that the method is asynchronous 
+    - `ActionResult<List<VideoGame>>`:
+        - Wraps the HTTP response.
+        - Can return HTTP status codes and `List<VideoGame>` payload.
+    - `GetVideoGame()`: name of the method.
+
+
+- Return
+```
+{
+    return Ok(await _context.VideoGames.ToListAsync());
+}
+```
+ - `return Ok(...)`
+    - A built-in ASP.NET Core helper method.
+    - Returns an HTTP 200 OK response with the retrieved list of video games as the response body.
+
+- `await _context.VideoGames.ToListAsync()` 
+    - Accesses the VideoGames table via _context (your Entity Framework Core database context).
+    - Asynchronously retrieves all video game records and converts them into a List<VideoGame>.
+
+ 
+
 
 ## 5. IMPLEMENT YOUR DATABASE CONTEXT AND ENTITY FRAMEWORK
 
