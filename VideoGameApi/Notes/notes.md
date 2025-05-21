@@ -131,4 +131,6 @@ Interface-based abstraction: if you don't care about list-specific methods (like
 
 Future flexibility: if later you change from .ToListAsync() to something else (like .Where() + .AsEnumerable() or .ToArrayAsync()), you won’t have to update your method signature.
 
-Cleaner contracts: it exposes less to consumers of your API. They don’t need to know it’s a list — just that it’s a collection you can iterate through.
+Cleaner contracts: This exposes less to consumers of your API. They don’t need to know it’s a list — just that it’s a collection you can iterate through.
+
+When working with LINQ queries, IEnumerable<T> supports deferred execution — meaning the query isn't evaluated until you actually iterate over it. This can be useful for performance optimization, especially with large datasets or chained queries.
